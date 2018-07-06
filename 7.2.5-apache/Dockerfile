@@ -1,17 +1,16 @@
-FROM php:7.0.6-apache
-MAINTAINER Rokk Media <tristan@rokkmedia.co.uk>
+FROM php:7.2.5-apache
+MAINTAINER Azure App Services Container Images <appsvc-images@microsoft.com>
 
 COPY apache2.conf /bin/
 COPY init_container.sh /bin/
 COPY hostingstart.html /home/site/wwwroot/hostingstart.html
-# COPY phpinfo.php /home/site/wwwroot/phpinfo.php
 
 RUN a2enmod rewrite expires include deflate
 
 # install the PHP extensions we need
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-         libpng12-dev \
+         libpng-dev \
          libjpeg-dev \
          libpq-dev \
          libmcrypt-dev \
@@ -20,7 +19,6 @@ RUN apt-get update \
          libicu-dev \
          libgmp-dev \
          libmagickwand-dev \
-         libxml2-dev \
          openssh-server vim curl wget tcptraceroute \
     && chmod 755 /bin/init_container.sh \
     && echo "root:Docker!" | chpasswd \
@@ -30,6 +28,7 @@ RUN apt-get update \
     && ln -s /usr/include/x86_64-linux-gnu/gmp.h /usr/include/gmp.h \
     && rm -rf /var/lib/apt/lists/* \
     && pecl install imagick-beta \
+    && pecl install mcrypt-1.0.1 \
     && docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
     && docker-php-ext-install gd \
          mysqli \
@@ -40,14 +39,13 @@ RUN apt-get update \
          pgsql \
          ldap \
          intl \
-         mcrypt \
          gmp \
          zip \
          bcmath \
          mbstring \
          pcntl \
-         soap \
-    && docker-php-ext-enable imagick
+    && docker-php-ext-enable imagick \
+    && docker-php-ext-enable mcrypt
 
 RUN   \
    rm -f /var/log/apache2/* \
@@ -88,7 +86,7 @@ COPY sshd_config /etc/ssh/
 EXPOSE 2222 8080
 
 ENV APACHE_RUN_USER www-data
-ENV PHP_VERSION 7.0.6
+ENV PHP_VERSION 7.2.5
 
 ENV PORT 8080
 ENV WEBSITE_ROLE_INSTANCE_ID localRoleInstance
