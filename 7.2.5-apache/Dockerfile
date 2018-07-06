@@ -1,9 +1,10 @@
 FROM php:7.2.5-apache
-MAINTAINER Azure App Services Container Images <appsvc-images@microsoft.com>
+MAINTAINER Rokk Media <tristan@rokkmedia.co.uk>
 
 COPY apache2.conf /bin/
 COPY init_container.sh /bin/
 COPY hostingstart.html /home/site/wwwroot/hostingstart.html
+# COPY phpinfo.php /home/site/wwwroot/phpinfo.php
 
 RUN a2enmod rewrite expires include deflate
 
@@ -19,6 +20,7 @@ RUN apt-get update \
          libicu-dev \
          libgmp-dev \
          libmagickwand-dev \
+         libxml2-dev \
          openssh-server vim curl wget tcptraceroute \
     && chmod 755 /bin/init_container.sh \
     && echo "root:Docker!" | chpasswd \
@@ -44,6 +46,7 @@ RUN apt-get update \
          bcmath \
          mbstring \
          pcntl \
+         soap \
     && docker-php-ext-enable imagick \
     && docker-php-ext-enable mcrypt
 

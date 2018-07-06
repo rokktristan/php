@@ -8,6 +8,8 @@ cat >/etc/motd <<EOL
         \/      \/                  \/ 
 A P P   S E R V I C E   O N   L I N U X
 
+RM modified image (v1.0.3)
+
 Documentation: http://aka.ms/webapp-linux
 PHP quickstart: https://aka.ms/php-qs
 
